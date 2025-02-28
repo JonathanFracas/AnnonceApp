@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { Movie } from "./models/Movie";
+import { HomeScreen } from "./screens/HomeScreen";
+import { MovieDetailsScreen } from "./screens/MovieDetailsScreen";
+import { FavoritesScreen } from "./screens/FavoritesScreen";
 
+/**
+ * Définition des types pour les routes de l'application.
+ */
+export type RootStackParamList = {
+  // Ecran d'acceuil.
+  Home: undefined;
+  // Ecran des détails d'un film.
+  Details: { movie: Movie };
+  // Ecran des favoris.
+  Favoris: undefined;
+};
+
+// Crée une instance de la navigation avec les types définis.
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+/**
+ * Composant principal de l'application.
+ * @constructor
+ */
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Details" component={MovieDetailsScreen} />
+          <Stack.Screen name="Favoris" component={FavoritesScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
