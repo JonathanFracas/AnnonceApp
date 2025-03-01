@@ -4,22 +4,22 @@ import { PhoneAd } from "../models/PhoneAd";
 import { Card, Paragraph, Title, Text } from "react-native-paper";
 
 /**
- * Les propriétés du composant d'un film d'une liste de films.
+ * Les propriétés du composant d'une annonce de téléphone.
  */
-type MovieItemProps = {
-  // Le film.
+type PhoneAdItemProps = {
+  // L'annonce.
   phoneAd: PhoneAd;
-  // Méthode à appeler lors de l'appuie sur le film.
+  // Méthode à appeler lors de l'appuie sur l'annonce.
   onPressPhoneAdd: (phoneAd: PhoneAd) => void;
 };
 
 /**
- * Composant d'un film d'une liste de films.
- * @param movie - Le film.
- * @param onPressMovie - Méthode à appeler lors de l'appuie sur le film.
+ * Composant d'une annonce de téléphone.
+ * @param phoneAd - Le film.
+ * @param onPressPhoneAdd - Méthode à appeler lors de l'appuie sur l'annonce.
  * @constructor
  */
-const PhoneAdItem = ({ phoneAd, onPressPhoneAdd }: MovieItemProps) => (
+const PhoneAdItem = ({ phoneAd, onPressPhoneAdd }: PhoneAdItemProps) => (
   <TouchableOpacity onPress={() => onPressPhoneAdd(phoneAd)}>
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
@@ -37,17 +37,17 @@ const PhoneAdItem = ({ phoneAd, onPressPhoneAdd }: MovieItemProps) => (
 );
 
 /**
- * Propriétés du composant d'une liste de films.
+ * Propriétés du composant d'une liste d'annonces de téléphone.
  */
 interface MovieListProps {
-  // Les films de la liste.
+  // Les annnonces de la liste.
   phoneAds: PhoneAd[];
-  // Méthode appelée lors de l'appui sur un film.
+  // Méthode appelée lors de l'appui sur une annonce.
   onPressPhoneAd: (movie: PhoneAd) => void;
 }
 
 /**
- * Composant d'une liste de film.
+ * Composant d'une liste d'annonce de téléphone.
  * @param props
  * @constructor
  */

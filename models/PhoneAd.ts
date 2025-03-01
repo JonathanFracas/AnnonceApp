@@ -1,5 +1,5 @@
 /**
- * Interface des données d'un film.
+ * Interface des données d'une annonce d'un téléphone.
  */
 export interface PhoneAd {
   id: string;
