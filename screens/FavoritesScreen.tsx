@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { useNavigation } from "@react-navigation/native";
-import { MovieList } from "../components/MovieList";
+import { PhoneAdsList } from "../components/PhoneAdsList";
+import { Text, Surface } from "react-native-paper";
+import { PhoneAd } from "../models/PhoneAd";
 
 /**
  * Typage des propriétés de l'écran des favoris.
@@ -21,20 +23,33 @@ type FavoritesScreenNavigationProp = NativeStackNavigationProp<
  */
 export function FavoritesScreen() {
   // Hook pour accéder à l'objet de navigation.
-  const navigation = useNavigation<FavoritesScreenNavigationProp>();
+  const navigation: FavoritesScreenNavigationProp =
+    useNavigation<FavoritesScreenNavigationProp>();
 
   // Récupération de la liste des films favoris depuis l'état global.
-  const favorites = useSelector(
+  const favorites: PhoneAd[] = useSelector(
     (state: RootState) => state.favorites.favorites,
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Mes Favoris</Text>
-      <MovieList
-        movies={favorites}
-        onPressMovie={(movie) => navigation.navigate("Details", { movie })}
-      />
+      <Surface style={styles.content}>
+        {favorites.length > 0 ? (
+          <>
+            <Text style={styles.header}>Mes favoris</Text>
+            <PhoneAdsList
+              phoneAds={favorites}
+              onPressPhoneAd={(phoneAd) =>
+                navigation.navigate("Details", { phoneAd })
+              }
+            />
+          </>
+        ) : (
+          <Text style={styles.emptyText}>
+            Aucun téléphone en favoris pour le moment
+          </Text>
+        )}
+      </Surface>
     </View>
   );
 }
@@ -43,13 +58,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
-    paddingHorizontal: 10,
+  },
+  content: {
+    flex: 1,
+    padding: 16,
+    margin: 16,
+    borderRadius: 8,
+    elevation: 4,
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#555",
+    marginTop: 20,
   },
 });

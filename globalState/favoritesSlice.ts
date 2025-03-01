@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Movie } from "../models/Movie";
+import { PhoneAd } from "../models/PhoneAd";
 
 /**
  * Interface de l'état global des favoris.
  */
 interface FavoritesState {
-  favorites: Movie[];
+  favorites: PhoneAd[];
 }
 
 const initialState: FavoritesState = {
@@ -21,7 +21,7 @@ const favoritesSlice = createSlice({
      * @param state - L'état global.
      * @param action - Le film ajouté.
      */
-    addFavorite: (state, action: PayloadAction<Movie>) => {
+    addFavorite: (state, action: PayloadAction<PhoneAd>) => {
       if (!state.favorites.find((movie) => movie.id === action.payload.id)) {
         state.favorites.push(action.payload);
       }
@@ -32,7 +32,7 @@ const favoritesSlice = createSlice({
      * @param state - L'état global.
      * @param action - Le film supprimé.
      */
-    removeFavorite: (state, action: PayloadAction<number>) => {
+    removeFavorite: (state, action: PayloadAction<string>) => {
       state.favorites = state.favorites.filter(
         (movie) => movie.id !== action.payload,
       );

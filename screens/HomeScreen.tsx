@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { getMovies, Movie } from "../models/Movie";
+import { View, StyleSheet } from "react-native";
+import { getPhonesAds, PhoneAd } from "../models/PhoneAd";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import BetterButton from "../components/utils/BetterButton";
-import { MovieList } from "../components/MovieList";
+import { PhoneAdsList } from "../components/PhoneAdsList";
+import { Button, Card, Text, TextInput } from "react-native-paper";
 
 /**
  * Typage des propriétés de l'ecran d'acceuil.
  */
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "Home"
+  "Liste des annonces"
 >;
 
 /**
@@ -22,35 +22,85 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
  * @constructor
  */
 export function HomeScreen() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [phoneAds, setPhoneAds] = useState<PhoneAd[]>([]);
+
+  const [model, setModel] = useState<string>("");
+
+  const [adsCount, setAdsCount] = useState<number>(0);
 
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  const favoritesCount = useSelector(
+  const [phoneAdsToDisplay, setPhoneAdsToDisplay] = useState<PhoneAd[]>([]);
+
+  const favoritesCount: number = useSelector(
     (state: RootState) => state.favorites.favorites.length,
   );
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      setMovies(await getMovies());
+  useEffect((): void => {
+    const fetchPhoneAds = async (): Promise<void> => {
+      setPhoneAds(await getPhonesAds());
     };
 
-    fetchMovies();
+    fetchPhoneAds();
   }, []);
 
-  const handlePressMovie = (movie: Movie) => {
-    navigation.navigate("Details", { movie });
+  useEffect(() => {
+    handlePhoneAdsToDisplayChange(phoneAds);
+  }, [phoneAds]);
+
+  const handlePhoneAdsToDisplayChange = (
+    phoneAdsToDisplay: PhoneAd[],
+  ): void => {
+    setPhoneAdsToDisplay(phoneAdsToDisplay);
+    setAdsCount(phoneAdsToDisplay.length);
+  };
+
+  const handlePressPhoneAd = (phoneAd: PhoneAd): void => {
+    navigation.navigate("Details", { phoneAd: phoneAd });
+  };
+
+  const handleModelSearchChange = (model: string): void => {
+    setModel(model);
+    const phoneAdsToDisplay: PhoneAd[] = phoneAds.filter((phoneAd) => {
+      return phoneAd.model.includes(model);
+    });
+    handlePhoneAdsToDisplayChange(phoneAdsToDisplay);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Les films</Text>
-      <BetterButton
-        text={`Mes favoris (${favoritesCount})`}
-        onPress={() => navigation.navigate("Favoris")}
-        buttonStyle={styles.button}
-      />
-      <MovieList movies={movies} onPressMovie={handlePressMovie} />
+      <Card>
+        <Card.Content>
+          <View style={styles.content}>
+            <Button
+              mode={"outlined"}
+              onPress={() => navigation.navigate("Favoris")}
+              icon={"heart"}>
+              Mes favoris {favoritesCount}
+            </Button>
+          </View>
+
+          <View style={styles.content}>
+            <TextInput
+              value={model}
+              onChangeText={(text) => handleModelSearchChange(text)}
+              placeholder={"Rechercher un modele"}
+            />
+          </View>
+
+          <View style={styles.content}>
+            <Text>Nombre d'annonces : {adsCount}</Text>
+          </View>
+
+          <View>
+            <PhoneAdsList
+              phoneAds={phoneAdsToDisplay}
+              onPressPhoneAd={handlePressPhoneAd}
+            />
+          </View>
+
+        </Card.Content>
+      </Card>
     </View>
   );
 }
@@ -59,16 +109,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
     paddingHorizontal: 10,
   },
+
+  content: {
+    margin: 5,
+  },
+
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
-  },
-  button: {
-    backgroundColor: "lightblue",
   },
 });

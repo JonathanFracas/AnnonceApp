@@ -9,6 +9,7 @@ module.exports = {
     semi: ["error", "always"],
     "arrow-parens": ["error", "always"],
     "no-multiple-empty-lines": ["error", { max: 1 }],
+    "react/no-unescaped-entities": ["error", { forbid: [">", "<"] }],
   },
   ignorePatterns: ["/dist/*"],
 };
